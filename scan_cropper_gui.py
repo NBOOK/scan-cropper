@@ -3,6 +3,8 @@
 
 from __future__ import annotations
 
+__version__ = "0.1.0"
+
 import json
 import math
 import os
@@ -6457,7 +6459,8 @@ class CropperWindow(QMainWindow):
 
 def main() -> int:
     app = QApplication(sys.argv)
-    app.setApplicationName("漫画扫描自动裁切")
+    app.setApplicationName("扫图裁切")
+    app.setApplicationVersion(__version__)
     initial: Path | None = None
     if len(sys.argv) > 1:
         initial = Path(sys.argv[1])

@@ -1,0 +1,65 @@
+name: Windows release
+
+on:
+  push:
+    tags: ["v*"]
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  build:
+    runs-on: windows-latest
+    defaults:
+      run:
+        shell: pwsh
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+          cache: pip
+
+      - name: Install dependencies
+        run: |
+          python -m pip install --upgrade pip
+          pip install -r requirements.txt pyinstaller pytest
+
+      - name: Read version
+        id: version
+        run: |
+          $version = python -c "import re; print(re.search(r'__version__ = \"(.+?)\"', open('scan_cropper_gui.py', encoding='utf-8').read()).group(1))"
+          if ($env:GITHUB_REF_TYPE -eq 'tag' -and $env:GITHUB_REF_NAME -ne "v$version") {
+            throw "Tag $env:GITHUB_REF_NAME does not match version $version"
+          }
+          "version=$version" >> $env:GITHUB_OUTPUT
+
+      - name: Test
+        run: pytest -q
+
+      - name: Build
+        run: |
+          pyinstaller --noconfirm --clean --windowed --name ScanCropper `
+            --exclude-module scan_cropper_adapters `
+            scan_cropper_gui.py
+          $app = 'dist/ScanCropper'
+          Copy-Item -Recurse cursors $app
+          Copy-Item scan_cropper_adapters.py, README.md, LICENSE $app
+          $zip = "ScanCropper-${{ steps.version.outputs.version }}-windows-x64.zip"
+          Compress-Archive -Path $app -DestinationPath $zip
+          "ZIP=$zip" >> $env:GITHUB_ENV
+
+      - uses: actions/upload-artifact@v4
+        with:
+          name: ScanCropper-windows
+          path: ${{ env.ZIP }}
+
+      - name: Publish release
+        if: github.ref_type == 'tag'
+        uses: softprops/action-gh-release@v2
+        with:
+          name: 扫图裁切 ${{ github.ref_name }}
+          files: ${{ env.ZIP }}
+          generate_release_notes: true

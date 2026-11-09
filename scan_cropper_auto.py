@@ -13,6 +13,7 @@ import hashlib
 import json
 import math
 import re
+import sys
 import threading
 
 import numpy as np
@@ -40,6 +41,12 @@ def adapters():
     """
     global _ADAPTERS
     if _ADAPTERS is None:
+        if getattr(sys, 'frozen', False):
+            # The packaged app ships the file beside the .exe, so it can be
+            # deleted there just the same.
+            folder = str(Path(sys.executable).resolve().parent)
+            if folder not in sys.path:
+                sys.path.insert(0, folder)
         try:
             import scan_cropper_adapters as module
         except ImportError:

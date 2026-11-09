@@ -15,7 +15,9 @@
 
 ## 安装与启动
 
-需要 Python 3.10 或更新版本。
+Windows 用户可以从 [Releases](https://github.com/NBOOK/scan-cropper/releases) 下载压缩包，解压后运行 `ScanCropper.exe`，无需安装 Python。
+
+从源码运行需要 Python 3.10 或更新版本。
 
 ```bash
 pip install -r requirements.txt
@@ -154,7 +156,7 @@ Windows 下环境变量里有python时也可以双击 `start_scan_cropper_gui.ba
 
 默认的检测是通用的，只要求纸张与扫描背景有亮度差别。
 
-`scan_cropper_adapters.py` 包含为作者所用扫描仪编写的附加处理：扫描仪顶部的亮边与暗槽、未拆书扫描时的顶部标尺，以及纸边被与背景同样暗的深色印刷遮住时的识别。它们可能不适合你的扫描仪或摆放方式。如果纸边检测或角度不准，可以删除这个文件，软件会回到通用检测，其他功能不受影响。
+`scan_cropper_adapters.py` 包含为作者所用扫描仪编写的附加处理：扫描仪顶部的亮边与暗槽、未拆书扫描时的顶部标尺，以及纸边被与背景同样暗的深色印刷遮住时的识别。它们可能不适合你的扫描仪或摆放方式。如果纸边检测或角度不准，可以删除这个文件（打包版位于 `ScanCropper.exe` 旁边），软件会回到通用检测，其他功能不受影响。
 
 ## 许可证
 
