@@ -1,0 +1,16 @@
+__pycache__/
+*.py[cod]
+*.exe
+*.bak*
+build/
+dist/
+.pytest_cache/
+.scan-cropper-cache/
+.build-env/
+*.spec
+validation/
+*.log
+scan_cropper_settings.json
+scan_cropper_settings.json.tmp
+scan_cropper_color_profiles.json
+scan_cropper_color_profiles.json.tmp
