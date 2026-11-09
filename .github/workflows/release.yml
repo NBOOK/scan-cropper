@@ -15,9 +15,9 @@ jobs:
       run:
         shell: pwsh
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v5
 
-      - uses: actions/setup-python@v5
+      - uses: actions/setup-python@v6
         with:
           python-version: "3.12"
           cache: pip
@@ -30,7 +30,7 @@ jobs:
       - name: Read version
         id: version
         run: |
-          $version = python -c "import re; print(re.search(r'__version__ = \"(.+?)\"', open('scan_cropper_gui.py', encoding='utf-8').read()).group(1))"
+          $version = (Select-String -Path scan_cropper_gui.py -Pattern '^__version__ = "(.+)"').Matches[0].Groups[1].Value
           if ($env:GITHUB_REF_TYPE -eq 'tag' -and $env:GITHUB_REF_NAME -ne "v$version") {
             throw "Tag $env:GITHUB_REF_NAME does not match version $version"
           }
@@ -51,7 +51,7 @@ jobs:
           Compress-Archive -Path $app -DestinationPath $zip
           "ZIP=$zip" >> $env:GITHUB_ENV
 
-      - uses: actions/upload-artifact@v4
+      - uses: actions/upload-artifact@v5
         with:
           name: ScanCropper-windows
           path: ${{ env.ZIP }}
